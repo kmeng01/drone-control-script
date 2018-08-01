@@ -7,6 +7,8 @@ import time
 from dronekit import connect, VehicleMode, LocationGlobalRelative, Command, LocationGlobal
 from pymavlink import mavutil
 
+from pynput.keyboard import Key, Listener
+
 #- Importing Tkinter: sudo apt-get install python-tk
 import Tkinter as tk
 
@@ -70,30 +72,51 @@ def set_velocity_body(vehicle, vx, vy, vz):
     
     
 #-- Key event function
-def key(event):
+#def key(event):
     #if event.char == event.keysym: #-- standard keys
     #    if event.keysym == 'r':
     #        print("r pressed >> Set the vehicle to RTL")
     #        vehicle.mode = VehicleMode("RTL")
             
     #else: #-- non standard keys
-        if event.keysym == 'w':
-            print("Up key pressed")
-            set_velocity_body(vehicle, gnd_speed, 0, 0)
-        elif event.keysym == 's':
-            set_velocity_body(vehicle,-gnd_speed, 0, 0)
-        elif event.keysym == 'a':
-            set_velocity_body(vehicle, 0, -gnd_speed, 0)
-        elif event.keysym == 'd':
-            set_velocity_body(vehicle, 0, gnd_speed, 0)
-    
+     #   if event.keysym == 'w':
+     #       print("Up key pressed")
+      #      set_velocity_body(vehicle, gnd_speed, 0, 0)
+       # elif event.keysym == 's':
+       #     set_velocity_body(vehicle,-gnd_speed, 0, 0)
+       # elif event.keysym == 'a':
+       #     set_velocity_body(vehicle, 0, -gnd_speed, 0)
+        #elif event.keysym == 'd':
+         #   set_velocity_body(vehicle, 0, gnd_speed, 0)
+
+def on_press(key):
+    print('{0} pressed'.format(
+        key))
+    if key == 'w':
+        print("Up key pressed")
+        set_velocity_body(vehicle, gnd_speed, 0, 0)
+    elif key == 's':
+        print("down key pressed")
+        set_velocity_body(vehicle, -gnd_speed, 0, 0)
+    elif key == 'a':
+        print("left key pressed")
+        set_velocity_body(vehicle, 0, -gnd_speed, 0)
+    elif key == 'd':
+        print("right key pressed")
+        set_velocity_body(vehicle, 0, gnd_speed, 0)
+def on_release(key):
+    print('{0} release'.format(
+        key))
+    if key == Key.esc:
+        # Stop listener
+        return False    
     
 #---- MAIN FUNCTION
 #- Takeoff
 arm_and_takeoff(10)
- 
-#- Read the keyboard with tkinter
-root = tk.Tk()
-print(">> Control the drone with the arrow keys. Press r for RTL mode")
-root.bind_all('<Key>', key)
-root.mainloop()
+
+# Collect events until released
+with Listener(
+        on_press=on_press,
+        on_release=on_release) as listener:
+    listener.join()
