@@ -112,12 +112,12 @@ def on_release(key):
         # Stop listener
         return False    
 
+#---- MAIN FUNCTION
+#- Takeoff
+arm_and_takeoff(10)
+
 # Collect events until released
 with Listener(
         on_press=on_press,
         on_release=on_release) as listener:
     listener.join()
-
-#---- MAIN FUNCTION
-#- Takeoff
-arm_and_takeoff(10)
