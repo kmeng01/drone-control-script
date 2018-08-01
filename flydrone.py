@@ -58,12 +58,12 @@ def set_velocity_body(vehicle, vx, vy, vz):
     
     
     """
-    msg = vehicle.message_factory.set_attitude_target(
+    msg = vehicle.message_factory.set_attitude_target_encode(
         0, 0, 0,
         0b00000000,
         (1,0,0,0),
-        0,5,0,
-        0
+        0,500,0,
+        200
     )
 
     # msg = vehicle.message_factory.set_position_target_local_ned_encode(
