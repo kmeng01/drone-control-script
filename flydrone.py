@@ -18,7 +18,7 @@ print('Connecting...')
 vehicle = connect('udpout:192.168.42.1:14550')
 
 #-- Setup the commanded flying speed
-gnd_speed = 5 # [m/s]
+gnd_speed = 200 # [m/s]
 
 #-- Define arm and takeoff
 def arm_and_takeoff(altitude):
@@ -28,7 +28,7 @@ def arm_and_takeoff(altitude):
    #   time.sleep(1)
 
    print("Arming motors")
-   vehicle.mode = VehicleMode("ALT_HOLD")
+   vehicle.mode = VehicleMode("GUIDED_NOGPS")
    vehicle.armed = True
 
    while not vehicle.armed: time.sleep(1)
@@ -36,13 +36,13 @@ def arm_and_takeoff(altitude):
    print("Taking Off")
    vehicle.simple_takeoff(altitude)
 
-   while True:
-      v_alt = vehicle.location.global_relative_frame.alt
-      print(">> Altitude = %.1f m"%v_alt)
-      if v_alt >= altitude - 1.0:
-          print("Target altitude reached")
-          break
-      time.sleep(1)
+   #while True:
+   #   v_alt = vehicle.location.global_relative_frame.alt
+   #   print(">> Altitude = %.1f m"%v_alt)
+   #   if v_alt >= altitude - 1.0:
+   #       print("Target altitude reached")
+   #       break
+   #   time.sleep(1)
       
  #-- Define the function for sending mavlink velocity command in body frame
 def set_velocity_body(vehicle, vx, vy, vz):
@@ -69,6 +69,7 @@ def set_velocity_body(vehicle, vx, vy, vz):
             0, 0)
     vehicle.send_mavlink(msg)
     vehicle.flush()
+    print("Complete")
     
     
 #-- Key event function
@@ -90,18 +91,20 @@ def set_velocity_body(vehicle, vx, vy, vz):
          #   set_velocity_body(vehicle, 0, gnd_speed, 0)
 
 def on_press(key):
-    print('{0} pressed'.format(
-        key))
-    if key == 'w':
+    try:
+	dummy = key.char
+    except:
+	return
+    if key.char == 'w':
         print("Up key pressed")
         set_velocity_body(vehicle, gnd_speed, 0, 0)
-    elif key == 's':
+    elif key.char == 's':
         print("down key pressed")
         set_velocity_body(vehicle, -gnd_speed, 0, 0)
-    elif key == 'a':
+    elif key.char == 'a':
         print("left key pressed")
         set_velocity_body(vehicle, 0, -gnd_speed, 0)
-    elif key == 'd':
+    elif key.char == 'd':
         print("right key pressed")
         set_velocity_body(vehicle, 0, gnd_speed, 0)
 
