@@ -8,6 +8,7 @@ from dronekit import connect, VehicleMode, LocationGlobalRelative, Command, Loca
 from pymavlink import mavutil
 
 from pynput.keyboard import Key, Listener
+import math
 
 #- Importing Tkinter: sudo apt-get install python-tk
 import Tkinter as tk
@@ -58,10 +59,23 @@ def set_velocity_body(vehicle, d_roll, d_pitch, d_yaw, d_thrust):
 
     print(roll, pitch, yaw, thrust)
 
+    eulerXYZ = [roll,pitch,yaw]
+
+    c1 = math.cos(eulerXYZ[0] / 2)
+    c2 = math.cos(eulerXYZ[1] / 2)
+    c3 = math.cos(eulerXYZ[2] / 2)
+    s1 = math.sin(eulerXYZ[0] / 2)
+    s2 = math.sin(eulerXYZ[1] / 2)
+    s3 = math.sin(eulerXYZ[2] / 2)
+    x = s1 * c2 * c3 + c1 * s2 * s3
+    y = c1 * s2 * c3 - s1 * c2 * s3
+    z = c1 * c2 * s3 + s1 * s2 * c3
+    w = c1 * c2 * c3 - s1 * s2 * s3
+
     msg = vehicle.message_factory.set_attitude_target_encode(
         0, 0, 0,
         0b00000000,
-        (1,roll,pitch,yaw),
+        (w,x,y,z),
         1,1,1,
         thrust
     )
