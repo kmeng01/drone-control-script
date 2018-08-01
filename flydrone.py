@@ -18,14 +18,13 @@ print('Connecting...')
 vehicle = connect('udpout:192.168.42.1:14550')
 
 #-- Setup the commanded flying speed
-gnd_speed = 200 # [m/s]
+roll = 0
+yaw = 0
+pitch = 0
+thrust = 0
 
 #-- Define arm and takeoff
 def arm_and_takeoff(altitude):
-
-   #while not vehicle.is_armable:
-   #   print("waiting to be armable")
-   #   time.sleep(1)
 
    print("Arming motors")
    vehicle.mode = VehicleMode("GUIDED_NOGPS")
@@ -45,25 +44,24 @@ def arm_and_takeoff(altitude):
    #   time.sleep(1)
       
  #-- Define the function for sending mavlink velocity command in body frame
-def set_velocity_body(vehicle, vx, vy, vz):
-    """ Remember: vz is positive downward!!!
-    http://ardupilot.org/dev/docs/copter-commands-in-guided-mode.html
+def set_velocity_body(vehicle, d_roll, d_pitch, d_yaw, d_thrust):
     
-    Bitmask to indicate which dimensions should be ignored by the vehicle 
-    (a value of 0b0000000000000000 or 0b0000001000000000 indicates that 
-    none of the setpoint dimensions should be ignored). Mapping: 
-    bit 1: x,  bit 2: y,  bit 3: z, 
-    bit 4: vx, bit 5: vy, bit 6: vz, 
-    bit 7: ax, bit 8: ay, bit 9:
-    
-    
-    """
+    global roll
+    global pitch
+    global yaw
+    global thrust
+
+    roll = roll + d_roll
+    pitch = pitch + d_pitch
+    yaw = yaw + d_yaw
+    thrust = thrust + d_thrust
+
     msg = vehicle.message_factory.set_attitude_target_encode(
         0, 0, 0,
         0b00000000,
         (1,0,0,0),
-        0,500,0,
-        200
+        roll,pitch,yaw,
+        thrust
     )
 
     # msg = vehicle.message_factory.set_position_target_local_ned_encode(
@@ -79,43 +77,30 @@ def set_velocity_body(vehicle, vx, vy, vz):
     vehicle.send_mavlink(msg)
     vehicle.flush()
     print("Complete")
-    
-    
-#-- Key event function
-#def key(event):
-    #if event.char == event.keysym: #-- standard keys
-    #    if event.keysym == 'r':
-    #        print("r pressed >> Set the vehicle to RTL")
-    #        vehicle.mode = VehicleMode("RTL")
-            
-    #else: #-- non standard keys
-     #   if event.keysym == 'w':
-     #       print("Up key pressed")
-      #      set_velocity_body(vehicle, gnd_speed, 0, 0)
-       # elif event.keysym == 's':
-       #     set_velocity_body(vehicle,-gnd_speed, 0, 0)
-       # elif event.keysym == 'a':
-       #     set_velocity_body(vehicle, 0, -gnd_speed, 0)
-        #elif event.keysym == 'd':
-         #   set_velocity_body(vehicle, 0, gnd_speed, 0)
 
 def on_press(key):
     try:
-	dummy = key.char
+	    dummy = key.char
     except:
-	return
+        if key == Key.up:
+            print("thrust up")
+            set_velocity_body(vehicle, 0, 0, 0, 50)
+        elif key == Key.down:
+            print("thrust down")
+            set_velocity_body(vehicle, 0, 0, 0, -50)    
+        return
     if key.char == 'w':
-        print("Up key pressed")
-        set_velocity_body(vehicle, gnd_speed, 0, 0)
+        print("pitch forward")
+        set_velocity_body(vehicle, 0, -100, 0, 0)
     elif key.char == 's':
-        print("down key pressed")
-        set_velocity_body(vehicle, -gnd_speed, 0, 0)
+        print("pitch down")
+        set_velocity_body(vehicle, 0 , 100, 0, 0)
     elif key.char == 'a':
-        print("left key pressed")
-        set_velocity_body(vehicle, 0, -gnd_speed, 0)
+        print("roll left")
+        set_velocity_body(vehicle, -100, 0, 0, 0)
     elif key.char == 'd':
-        print("right key pressed")
-        set_velocity_body(vehicle, 0, gnd_speed, 0)
+        print("roll right")
+        set_velocity_body(vehicle, 100, 0, 0, 0)
 
 def on_release(key):
     print('{0} release'.format(
