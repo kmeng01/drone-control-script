@@ -104,19 +104,20 @@ def on_press(key):
     elif key == 'd':
         print("right key pressed")
         set_velocity_body(vehicle, 0, gnd_speed, 0)
+
 def on_release(key):
     print('{0} release'.format(
         key))
     if key == Key.esc:
         # Stop listener
         return False    
-    
-#---- MAIN FUNCTION
-#- Takeoff
-arm_and_takeoff(10)
 
 # Collect events until released
 with Listener(
         on_press=on_press,
         on_release=on_release) as listener:
     listener.join()
+
+#---- MAIN FUNCTION
+#- Takeoff
+arm_and_takeoff(10)
