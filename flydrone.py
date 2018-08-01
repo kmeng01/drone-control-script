@@ -58,15 +58,24 @@ def set_velocity_body(vehicle, vx, vy, vz):
     
     
     """
-    msg = vehicle.message_factory.set_position_target_local_ned_encode(
-            0,
-            0, 0,
-            mavutil.mavlink.MAV_FRAME_BODY_NED,
-            0b0000111111000111, #-- BITMASK -> Consider only the velocities
-            0, 0, 0,        #-- POSITION
-            vx, vy, vz,     #-- VELOCITY
-            0, 0, 0,        #-- ACCELERATIONS
-            0, 0)
+    msg = vehicle.message_factory.set_attitude_target(
+        0, 0, 0,
+        0b00000000,
+        (1,0,0,0),
+        0,5,0,
+        0
+    )
+
+    # msg = vehicle.message_factory.set_position_target_local_ned_encode(
+    #         0,
+    #         0, 0,
+    #         mavutil.mavlink.MAV_FRAME_BODY_NED,
+    #         0b0000111111000111, #-- BITMASK -> Consider only the velocities
+    #         0, 0, 0,        #-- POSITION
+    #         vx, vy, vz,     #-- VELOCITY
+    #         0, 0, 0,        #-- ACCELERATIONS
+    #         0, 0)
+
     vehicle.send_mavlink(msg)
     vehicle.flush()
     print("Complete")
