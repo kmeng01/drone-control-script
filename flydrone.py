@@ -56,27 +56,19 @@ def set_velocity_body(vehicle, d_roll, d_pitch, d_yaw, d_thrust):
     yaw = yaw + d_yaw
     thrust = thrust + d_thrust
 
+    print(roll, pitch, yaw, thrust)
+
     msg = vehicle.message_factory.set_attitude_target_encode(
         0, 0, 0,
         0b00000000,
-        (1,0,0,0),
+        (1,roll,pitch,yaw),
         roll,pitch,yaw,
         thrust
     )
 
-    # msg = vehicle.message_factory.set_position_target_local_ned_encode(
-    #         0,
-    #         0, 0,
-    #         mavutil.mavlink.MAV_FRAME_BODY_NED,
-    #         0b0000111111000111, #-- BITMASK -> Consider only the velocities
-    #         0, 0, 0,        #-- POSITION
-    #         vx, vy, vz,     #-- VELOCITY
-    #         0, 0, 0,        #-- ACCELERATIONS
-    #         0, 0)
-
-    vehicle.send_mavlink(msg)
-    vehicle.flush()
-    print("Complete")
+    for _ in range(100): 
+        vehicle.send_mavlink(msg)
+        vehicle.flush()
 
 def on_press(key):
     try:
@@ -84,10 +76,10 @@ def on_press(key):
     except:
         if key == Key.up:
             print("thrust up")
-            set_velocity_body(vehicle, 0, 0, 0, 50)
+            set_velocity_body(vehicle, 0, 0, 0, 25)
         elif key == Key.down:
             print("thrust down")
-            set_velocity_body(vehicle, 0, 0, 0, -50)    
+            set_velocity_body(vehicle, 0, 0, 0, -25)
         return
     if key.char == 'w':
         print("pitch forward")
