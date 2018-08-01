@@ -77,14 +77,14 @@ def key(event):
     #        vehicle.mode = VehicleMode("RTL")
             
     #else: #-- non standard keys
-        if event.keysym == 'Up':
+        if event.keysym == 'w':
             print("Up key pressed")
             set_velocity_body(vehicle, gnd_speed, 0, 0)
-        elif event.keysym == 'Down':
+        elif event.keysym == 's':
             set_velocity_body(vehicle,-gnd_speed, 0, 0)
-        elif event.keysym == 'Left':
+        elif event.keysym == 'a':
             set_velocity_body(vehicle, 0, -gnd_speed, 0)
-        elif event.keysym == 'Right':
+        elif event.keysym == 'd':
             set_velocity_body(vehicle, 0, gnd_speed, 0)
     
     
