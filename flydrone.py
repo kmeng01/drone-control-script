@@ -13,7 +13,7 @@ import Tkinter as tk
 
 #-- Connect to the vehicle
 print('Connecting...')
-vehicle = connect('udp:127.0.0.1:14551')
+vehicle = connect('udpout:192.168.42.1:14550')
 
 #-- Setup the commanded flying speed
 gnd_speed = 5 # [m/s]
@@ -21,12 +21,12 @@ gnd_speed = 5 # [m/s]
 #-- Define arm and takeoff
 def arm_and_takeoff(altitude):
 
-   while not vehicle.is_armable:
-      print("waiting to be armable")
-      time.sleep(1)
+   #while not vehicle.is_armable:
+   #   print("waiting to be armable")
+   #   time.sleep(1)
 
    print("Arming motors")
-   vehicle.mode = VehicleMode("GUIDED")
+   vehicle.mode = VehicleMode("ALT_HOLD")
    vehicle.armed = True
 
    while not vehicle.armed: time.sleep(1)
@@ -71,13 +71,14 @@ def set_velocity_body(vehicle, vx, vy, vz):
     
 #-- Key event function
 def key(event):
-    if event.char == event.keysym: #-- standard keys
-        if event.keysym == 'r':
-            print("r pressed >> Set the vehicle to RTL")
-            vehicle.mode = VehicleMode("RTL")
+    #if event.char == event.keysym: #-- standard keys
+    #    if event.keysym == 'r':
+    #        print("r pressed >> Set the vehicle to RTL")
+    #        vehicle.mode = VehicleMode("RTL")
             
-    else: #-- non standard keys
+    #else: #-- non standard keys
         if event.keysym == 'Up':
+            print("Up key pressed")
             set_velocity_body(vehicle, gnd_speed, 0, 0)
         elif event.keysym == 'Down':
             set_velocity_body(vehicle,-gnd_speed, 0, 0)
