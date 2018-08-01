@@ -76,10 +76,10 @@ def on_press(key):
     except:
         if key == Key.up:
             print("thrust up")
-            set_velocity_body(vehicle, 0, 0, 0, 0.1)
+            set_velocity_body(vehicle, 0, 0, 0, 0.5)
         elif key == Key.down:
             print("thrust down")
-            set_velocity_body(vehicle, 0, 0, 0, -0.1)
+            set_velocity_body(vehicle, 0, 0, 0, -0.5)
         return
     if key.char == 'w':
         print("pitch forward")
