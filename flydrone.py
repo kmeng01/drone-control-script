@@ -32,8 +32,8 @@ def arm_and_takeoff(altitude):
 
    while not vehicle.armed: time.sleep(1)
 
-   print("Taking Off")
-   vehicle.simple_takeoff(altitude)
+   print("Fly now!")
+   #vehicle.simple_takeoff(altitude)
 
    #while True:
    #   v_alt = vehicle.location.global_relative_frame.alt
@@ -62,7 +62,7 @@ def set_velocity_body(vehicle, d_roll, d_pitch, d_yaw, d_thrust):
         0, 0, 0,
         0b00000000,
         (1,roll,pitch,yaw),
-        roll,pitch,yaw,
+        1,1,1,
         thrust
     )
 
@@ -76,23 +76,23 @@ def on_press(key):
     except:
         if key == Key.up:
             print("thrust up")
-            set_velocity_body(vehicle, 0, 0, 0, 25)
+            set_velocity_body(vehicle, 0, 0, 0, 0.1)
         elif key == Key.down:
             print("thrust down")
-            set_velocity_body(vehicle, 0, 0, 0, -25)
+            set_velocity_body(vehicle, 0, 0, 0, -0.1)
         return
     if key.char == 'w':
         print("pitch forward")
-        set_velocity_body(vehicle, 0, -100, 0, 0)
+        set_velocity_body(vehicle, 0, -1, 0, 0)
     elif key.char == 's':
         print("pitch down")
-        set_velocity_body(vehicle, 0 , 100, 0, 0)
+        set_velocity_body(vehicle, 0 , 1, 0, 0)
     elif key.char == 'a':
         print("roll left")
-        set_velocity_body(vehicle, -100, 0, 0, 0)
+        set_velocity_body(vehicle, -1, 0, 0, 0)
     elif key.char == 'd':
         print("roll right")
-        set_velocity_body(vehicle, 100, 0, 0, 0)
+        set_velocity_body(vehicle, 1, 0, 0, 0)
 
 def on_release(key):
     print('{0} release'.format(
