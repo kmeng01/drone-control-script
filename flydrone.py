@@ -17,6 +17,9 @@ vehicle = connect('udpout:192.168.42.1:14550')
 # vehicle = 0
 
 #-- Setup the commanded flying speed
+roll = 0
+pitch = 0
+yaw = 0
 thrust = 0
 
 #-- Define arm and takeoff
@@ -32,6 +35,9 @@ def init_motors():
       
  #-- Define the function for sending mavlink velocity command in body frame
 def set_thrust(vehicle, d_thrust):
+    global roll
+    global pitch
+    global yaw
     global thrust
 
     thrust = min(max(0,thrust + d_thrust),10)
@@ -41,7 +47,7 @@ def set_thrust(vehicle, d_thrust):
         0, 0, 0,
         #0b11111101,
 	0b00000000,
-        (1,0,0,0),
+        (1,roll,pitch,yaw),
         0,0,0,
         thrust
     )
@@ -50,8 +56,16 @@ def set_thrust(vehicle, d_thrust):
         vehicle.send_mavlink(msg)
         vehicle.flush()
 
-def set_euler(vehicle, roll, pitch, yaw, reset):
+def set_euler(vehicle, vroll, vpitch, vyaw, reset):
+    global roll
+    global pitch
+    global yaw 
     global thrust
+
+    roll = vroll
+    pitch = vpitch
+    yaw = vyaw
+
     print(roll, pitch, yaw, thrust)
 
     x = roll
