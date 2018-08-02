@@ -66,7 +66,7 @@ def set_euler(vehicle, roll, pitch, yaw, reset):
         thrust
     )
 
-    epochs = 5
+    epochs = 3
     if reset:
         epochs = 20
 
