@@ -39,7 +39,8 @@ def set_thrust(vehicle, d_thrust):
 
     msg = vehicle.message_factory.set_attitude_target_encode(
         0, 0, 0,
-        0b11111101,
+        #0b11111101,
+	0b00000000,
         (1,0,0,0),
         0,0,0,
         thrust
@@ -60,7 +61,8 @@ def set_euler(vehicle, roll, pitch, yaw, reset):
 
     msg = vehicle.message_factory.set_attitude_target_encode(
         0, 0, 0,
-        0b00000010,
+        #0b00000010,
+	0b00000000,
         (w,x,y,z),
         5,5,5,
         thrust
